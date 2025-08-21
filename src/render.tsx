@@ -118,14 +118,14 @@ export const bucketElements = (
         } else {
           const isBucketCustomElement = isCustomElement(bucket?.content[0]);
           if (!isBucketCustomElement && (hasBlock || hasBlock === undefined)) {
-            element = ltrim(element);
+            // element = ltrim(element);
           }
           const next = elements[index + 1];
 
           if (next) {
             const isNextCustomElement = isCustomElement(next);
             if (hasBlockContent(next) && !isNextCustomElement) {
-              element = rtrim(element);
+              // element = rtrim(element);
             }
           }
         }
