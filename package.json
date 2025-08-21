@@ -33,6 +33,7 @@
   "scripts": {
     "test": "NODE_ENV=test jest",
     "build": "rm -rf dist && tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json; echo '{\"type\": \"commonjs\"}' > dist/cjs/package.json",
+    "prepare": "npm run build",
     "coverage": "NODE_ENV=test jest --coverage",
     "pretty-check": "prettier --check \"**/*.{js,ts,tsx,json,md}\"",
     "pretty": "prettier --write \"**/*.{js,ts,tsx,json,md}\""
