@@ -72,13 +72,15 @@ export const bucketElements = (elements, collapse, parentTag) => {
                 else {
                     const isBucketCustomElement = isCustomElement(bucket?.content[0]);
                     if (!isBucketCustomElement && (hasBlock || hasBlock === undefined)) {
-                        // element = ltrim(element);
+                        element = ltrim(element);
                     }
                     const next = elements[index + 1];
                     if (next) {
                         const isNextCustomElement = isCustomElement(next);
-                        if (hasBlockContent(next) && !isNextCustomElement) {
-                            // element = rtrim(element);
+                        // Only trim whitespace if the next element is actually a block element
+                        // Don't trim if next element is a string (like "b" in <b>a </b>b)
+                        if (typeof next !== 'string' && hasBlockContent(next) && !isNextCustomElement) {
+                            element = rtrim(element);
                         }
                     }
                 }
