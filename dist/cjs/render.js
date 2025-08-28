@@ -103,8 +103,11 @@ const bucketElements = (elements, collapse, parentTag) => {
                 }
                 else {
                     const isBucketCustomElement = isCustomElement(bucket === null || bucket === void 0 ? void 0 : bucket.content[0]);
-                    if (!isBucketCustomElement && (hasBlock || hasBlock === undefined) && !/^\s+$/.test(element)) {
-                        element = ltrim(element);
+                    if (!isBucketCustomElement && (hasBlock || hasBlock === undefined)) {
+                        // Preserve single spaces but trim multiple spaces/newlines at the start
+                        if (!/^ $/.test(element)) { // Don't trim if element is exactly one space
+                            element = ltrim(element);
+                        }
                     }
                     const next = elements[index + 1];
                     if (next) {
@@ -112,10 +115,11 @@ const bucketElements = (elements, collapse, parentTag) => {
                         // Only trim whitespace if the next element is actually a block element
                         // Don't trim if next element is a string (like "b" in <b>a </b>b)
                         // Additionally, don't trim if element contains only whitespace (like " " in <span> </span>)
+                        // Preserve single spaces but trim multiple spaces/newlines at the end
                         if (typeof next !== 'string' &&
                             (0, exports.hasBlockContent)(next) &&
                             !isNextCustomElement &&
-                            !/^\s+$/.test(element) // Don't trim if element is only whitespace
+                            !/^ $/.test(element) // Don't trim if element is exactly one space
                         ) {
                             element = rtrim(element);
                         }

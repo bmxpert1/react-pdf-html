@@ -726,7 +726,7 @@ describe('render', () => {
     it('Should preserve space content in strong elements', () => {
       // Test that spaces inside elements are preserved
       const html =
-        '<p>A<strong>YELLOW</strong><strong> </strong><strong>SAMPLE</strong>B</p>';
+        '<p>Press <span style="color: rgb(250, 176, 5);"><strong>YELLOW</strong></span><span style="color: rgb(233, 245, 12);"><strong> </strong></span><strong>SAMPLE </strong> button again</p>';
       const rootView = renderHtml(html);
       expect(rootView.type).toBe(View);
 
@@ -750,7 +750,7 @@ describe('render', () => {
 
       const allText = extractAllText(p);
       // The space should be preserved, resulting in "A" + "YELLOW" + " " + "SAMPLE" + "B"
-      expect(allText).toBe('AYELLOW SAMPLEB');
+      expect(allText).toBe('Press YELLOW SAMPLE  button again');
     });
   });
 });
