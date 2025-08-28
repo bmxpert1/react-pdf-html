@@ -690,4 +690,67 @@ describe('render', () => {
 
     const pdfString = await renderToString(document);
   });
+
+  describe('GitHub issue #117 - Whitespace preservation', () => {
+    it('Should preserve spaces between inline elements', () => {
+      const html = '<p><b>a </b>b</p>';
+      const rootView = renderHtml(html);
+      expect(rootView.type).toBe(View);
+
+      const p = rootView.props.children;
+      expect(p.props.element.tag).toBe('p');
+      expect(p.type).toBe(renderBlock);
+
+      const textContent = p.props.children;
+      expect(textContent.type).toBe(Text);
+
+      // Should contain both the bold "a " and the "b" with space preserved
+      const children = textContent.props.children;
+      expect(Array.isArray(children)).toBe(true);
+
+      // Extract text content from the rendered elements
+      const boldElement = children.find(
+        (child: any) =>
+          child.props && child.props.element && child.props.element.tag === 'b'
+      );
+      expect(boldElement).toBeDefined();
+      expect(boldElement.props.children).toBe('a '); // Should include the trailing space
+
+      // The "b" should be a separate text element
+      const plainText = children.find(
+        (child: any) => typeof child === 'string'
+      );
+      expect(plainText).toBe('b');
+    });
+
+    it('Should preserve space content in strong elements', () => {
+      // Test that spaces inside elements are preserved
+      const html =
+        '<p>A<strong>YELLOW</strong><strong> </strong><strong>SAMPLE</strong>B</p>';
+      const rootView = renderHtml(html);
+      expect(rootView.type).toBe(View);
+
+      const p = rootView.props.children;
+      expect(p.props.element.tag).toBe('p');
+      expect(p.type).toBe(renderBlock);
+
+      // Extract all text content to verify the space is preserved
+      function extractAllText(element: any): string {
+        if (typeof element === 'string') {
+          return element;
+        }
+        if (Array.isArray(element)) {
+          return element.map(extractAllText).join('');
+        }
+        if (element && element.props && element.props.children) {
+          return extractAllText(element.props.children);
+        }
+        return '';
+      }
+
+      const allText = extractAllText(p);
+      // The space should be preserved, resulting in "A" + "YELLOW" + " " + "SAMPLE" + "B"
+      expect(allText).toBe('AYELLOW SAMPLEB');
+    });
+  });
 });

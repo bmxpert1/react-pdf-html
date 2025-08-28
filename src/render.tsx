@@ -117,7 +117,11 @@ export const bucketElements = (
           }
         } else {
           const isBucketCustomElement = isCustomElement(bucket?.content[0]);
-          if (!isBucketCustomElement && (hasBlock || hasBlock === undefined)) {
+          if (
+            !isBucketCustomElement &&
+            (hasBlock || hasBlock === undefined) &&
+            !/^\s+$/.test(element)
+          ) {
             element = ltrim(element);
           }
           const next = elements[index + 1];
@@ -126,10 +130,12 @@ export const bucketElements = (
             const isNextCustomElement = isCustomElement(next);
             // Only trim whitespace if the next element is actually a block element
             // Don't trim if next element is a string (like "b" in <b>a </b>b)
+            // Additionally, don't trim if element contains only whitespace (like " " in <span> </span>)
             if (
               typeof next !== 'string' &&
               hasBlockContent(next) &&
-              !isNextCustomElement
+              !isNextCustomElement &&
+              !/^\s+$/.test(element) // Don't trim if element is only whitespace
             ) {
               element = rtrim(element);
             }
